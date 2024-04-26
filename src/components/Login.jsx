@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Login = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, signInWithGoogle } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -14,11 +15,23 @@ const Login = () => {
     // Login user
     signInUser(email, password)
       .then((result) => {
+        e.target.reset();
+        navigate("/");
         console.log(result.user);
       })
       .catch((error) => {
         console.log(error.message);
       });
+  };
+
+  // google login
+  const handleGoogleLogin = () => {
+    signInWithGoogle()
+      .then((result) => {
+        navigate("/");
+        console.log(result.user);
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -68,6 +81,9 @@ const Login = () => {
               <button className="btn btn-link">Register</button>
             </NavLink>
           </p>
+          <button onClick={handleGoogleLogin} className="btn btn-ghost">
+            Google
+          </button>
         </div>
       </div>
     </div>
